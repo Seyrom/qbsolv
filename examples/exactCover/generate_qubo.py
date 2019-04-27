@@ -1,34 +1,10 @@
-import cProfile
-import io
-import pstats
-import random
-
+from numpy import ndarray
+import examples.exactCover.exactcover_util as ec
 import numpy as np
 from multiprocessing import Pool
 from functools import partial
 
 
-def do_cprofile(func):
-    def profiled_func(*args, **kwargs):
-        pr = cProfile.Profile()
-        try:
-            pr.enable()
-            result = func(*args, **kwargs)
-            pr.disable()
-            s = io.StringIO()
-            stats = pstats.Stats(pr, stream=s)
-            stats.strip_dirs()
-            stats.sort_stats('cumulative')
-            return result
-        finally:
-            regex = str(func)
-            stats.print_stats(regex)
-            print(s.getvalue())
-
-    return profiled_func
-
-
-@do_cprofile
 def generate_qubo_single_threaded(exact_cover, b=1):
     """Generates an upper triangular QUBO matrix for the given exact cover"""
     a = len(exact_cover) * b + 1
@@ -40,15 +16,15 @@ def generate_qubo_single_threaded(exact_cover, b=1):
             Q[(j, i)] = 4 * a * len(cur_subset & oth_subset)
     return Q
 
-@do_cprofile
+
 def generate_qubo_numpy_single_threaded(exact_cover, b=1):
     """Generates an upper triangular QUBO matrix as a numpy array for the given exact cover"""
     a = len(exact_cover) * b + 1
     dim = len(exact_cover)
-    #arr = np.zeros(shape= (dim, dim))
     arr = np.empty(shape= (dim, dim), dtype=np.dtype('>i4'))
     for j, cur_subset in enumerate(exact_cover):
         arr[j] = [4 * a * len(cur_subset & oth_subset) if j < i else -len(cur_subset) if i == j else 0 for i, oth_subset in enumerate(exact_cover)]
+    #return to_dict(arr)
     return to_dict(arr)
 
 def fill_col(i, ec, a):
@@ -61,7 +37,6 @@ def fill_col(i, ec, a):
     return dic_temp
 
 
-@do_cprofile
 def generate_qubo_multi_processing(exact_cover, nProcs, b=1):
     """Generates an upper triangular QUBO matrix for the given exact cover with multi processing"""
 
@@ -84,7 +59,7 @@ def fill_col_numpy(i, ec, a):
     return (arr, i)
 
 
-@do_cprofile
+
 def generate_qubo_numpy_multi_processing(exact_cover, nProcs, b=1):
     """Generates an upper triangular QUBO matrix with numpy for the given exact cover with multi processing"""
 
@@ -108,19 +83,24 @@ def to_dict(arr):
             Q[(i,j)] = val
     return Q;
 
-def generate_exact_cover(num_of_subsets):
-    """Generates a new exact cover problem with the given number of random filled subsets"""
-    subset = set()
-    while len(subset) < num_of_subsets:
-        subset.add(frozenset(random.sample(range(num_of_subsets), random.randint(1, num_of_subsets - 1))))
-    return list(subset)
+def getArrayItem(self, key):
+    x,y = key
+    return self[x,y]
 
-ec = generate_exact_cover(800)
-Q1 = generate_qubo_single_threaded(ec)
-Q2 = generate_qubo_numpy_single_threaded(ec)
-Q3 = generate_qubo_multi_processing(ec, 4)
-Q4 = generate_qubo_numpy_multi_processing(ec, 4)
 
-print(Q1 == Q2)
-print(Q2 == Q3)
-print(Q3 == Q4)
+class QUBO_array(ndarray):
+    def __getitem__(self, item):
+        tup = (tuple)(item)
+        return self[tup[0], tup[1]]
+
+
+if __name__ == '__main__':
+    ec = ec.generate_exact_cover(100)
+    Q1 = generate_qubo_single_threaded(ec)
+    Q2 = generate_qubo_numpy_single_threaded(ec)
+    Q3 = generate_qubo_multi_processing(ec, 4)
+    Q4 = generate_qubo_numpy_multi_processing(ec, 4)
+
+    print(Q1 == Q2)
+    print(Q2 == Q3)
+    print(Q3 == Q4)
