@@ -48,6 +48,8 @@ def generate_qubo_multi_processing(exact_cover, processes, b=1):
     prod = partial(fill_col, ec=exact_cover, a=a)
     pool = Pool(processes=processes)
     result = pool.map(prod, range(len(exact_cover)))
+    pool.close()
+    pool.join()
     for d in result:
         q.update(d)
     return q
@@ -71,6 +73,8 @@ def generate_qubo_numpy_multi_processing(exact_cover, processes, b=1):
     prod = partial(fill_col_numpy, ec=exact_cover, a=a)
     pool = Pool(processes=processes)
     result = pool.map(prod, range(len(exact_cover)))
+    pool.close()
+    pool.join()
     for row, i in result:
         arr[i] = row
 

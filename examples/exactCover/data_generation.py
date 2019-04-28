@@ -29,8 +29,9 @@ def create_test_data(start, end, step, iterations):
             filename = '/' + "{:06d}".format(variable_count)
             io.profile_method(solve_exact_cover, ec, save_directory=subfolder, filename=filename, iteration=i)
             io.post_processing_csv(subfolder + filename + '.csv', lbits=variable_count)
-            gc.collect()
+            if i % 4 == 0:
+                gc.collect()
 
 
 if __name__ == '__main__':
-    create_test_data(start=50, end=1000, step=50, iterations=3)
+    create_test_data(start=1000, end=2000, step=50, iterations=3)
