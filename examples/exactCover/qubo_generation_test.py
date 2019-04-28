@@ -1,6 +1,7 @@
 import examples.exactCover.path_util as pu
 import pandas as pd
 import timeit
+import gc
 
 
 
@@ -16,7 +17,7 @@ multiprocessing_numpy_code = '''gq.generate_qubo_numpy_multi_processing(ec, proc
 def create_csv(path, ec_size, num_reps = 1):
 
     setup = "import examples.exactCover.generate_qubo as gq \n" \
-            "import examples.exactCover.exactcover_util as ec \n" \
+            "import examples.exactCover.exact_cover_util as ec \n" \
             "ec = ec.generate_exact_cover("+str(ec_size)+")"
 
     serial = timeit.timeit(serial_code, setup=setup, number=num_reps)
@@ -27,26 +28,22 @@ def create_csv(path, ec_size, num_reps = 1):
 
     multiprocessing_numpy = timeit.timeit(multiprocessing_numpy_code, setup=setup, number=num_reps)
 
-    data ={ "serial" : serial,
-            "serial_numpy" : serial_numpy,
-            "multiprocessing" : multiprocessing,
-            "multiprocessing_numpy" : multiprocessing_numpy
-            }
-    df = pd.Series(data).to_frame('time')
+    data = [['serial',serial], ['serial_numpy', serial_numpy], ['multiprocessing', multiprocessing], ['multiprocessing_numpy', multiprocessing_numpy]]
+
+    df = pd.DataFrame(data, columns=['name', 'time'])
+    df.set_index('name', inplace=True)
     df['lBits'] = ec_size
 
-    df.to_csv(path)
+    df.to_csv(path, encoding="utf-8")
 
 
 if __name__ == '__main__':
     folder = pu.qubo_generation_path()
-    start = 450
-    end = 500
+    i = 50
+    end = 1000
     step = 50
-    cur = start
 
-    while cur <= end:
-        file = '/qubo_generation_' + "{:06d}".format(cur) + '.csv'
-        cur += step
-        path = folder + file
-        create_csv(path=path, ec_size=50, num_reps=1)
+    while i <= end:
+        create_csv(path=folder + '/' + "{:06d}".format(i) + '.csv', ec_size=i, num_reps=1)
+        i += step
+        gc.collect()

@@ -2,9 +2,7 @@ import cProfile
 import io
 import pstats
 import re
-import os
 import examples.exactCover.path_util as pu
-
 import pandas as pd
 
 
@@ -62,12 +60,13 @@ def profile_method(fnc, *args, save_directory, filename, iteration):
 def post_processing_csv(path_of_file, lBits):
     """Adds a new logicalBits column containing how many logical bits were used
     for this exactCover and deletes unused columns"""
-    df = pd.read_csv(path_of_file)
+    df = pd.read_csv(path_of_file, delimiter=',', encoding="utf-8")
     df.drop(['ncalls', 'tottime', 'percall', 'percall.1'], inplace=True, axis=1)
     df.rename(columns={'filename:lineno(function)':'function'}, inplace=True)
-    df.insert(1, 'logical Bits', lBits)
+    df['lBits'] = lBits
+    df.set_index('function', inplace=True)
     # removing Classname.py:linenumber and paranthesis
     regex = '(\S*.py:\d+)|\(|\)|{|}'
     df['function'] = df['function'].apply(lambda x : re.sub(regex,'', x))
     df['cumtime'] = df['cumtime'].round(5)
-    df.to_csv(path_of_file)
+    df.to_csv(path_of_file, delimiter=',', encoding="utf-8")
