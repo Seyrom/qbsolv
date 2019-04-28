@@ -1,9 +1,9 @@
-import examples.exactCover.path_util as pu
-import pandas as pd
 import timeit
+
 import gc
+import pandas as pd
 
-
+import examples.exactCover.path_util as pu
 
 serial_code = "gq.generate_qubo_single_threaded(ec)"
 
@@ -14,11 +14,10 @@ multiprocessing_code = '''gq.generate_qubo_multi_processing(ec, processes=4)'''
 multiprocessing_numpy_code = '''gq.generate_qubo_numpy_multi_processing(ec, processes=4)'''
 
 
-def create_csv(path, ec_size, num_reps = 1):
-
+def create_csv(path, ec_size, num_reps=1):
     setup = "import examples.exactCover.generate_qubo as gq \n" \
             "import examples.exactCover.exact_cover_util as ec \n" \
-            "ec = ec.generate_exact_cover("+str(ec_size)+")"
+            "ec = ec.generate_exact_cover(" + str(ec_size) + ")"
 
     serial = timeit.timeit(serial_code, setup=setup, number=num_reps)
 
@@ -28,7 +27,8 @@ def create_csv(path, ec_size, num_reps = 1):
 
     multiprocessing_numpy = timeit.timeit(multiprocessing_numpy_code, setup=setup, number=num_reps)
 
-    data = [['serial',serial], ['serial_numpy', serial_numpy], ['multiprocessing', multiprocessing], ['multiprocessing_numpy', multiprocessing_numpy]]
+    data = [['serial', serial], ['serial_numpy', serial_numpy], ['multiprocessing', multiprocessing],
+            ['multiprocessing_numpy', multiprocessing_numpy]]
 
     df = pd.DataFrame(data, columns=['name', 'time'])
     df.set_index('name', inplace=True)

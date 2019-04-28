@@ -1,7 +1,9 @@
-import examples.exactCover.exact_cover_util as ec
-import numpy as np
-from multiprocessing import Pool
 from functools import partial
+from multiprocessing import Pool
+
+import numpy as np
+
+import examples.exactCover.exact_cover_util as ec
 
 
 def generate_qubo_single_threaded(exact_cover, b=1):
