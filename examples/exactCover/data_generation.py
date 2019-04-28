@@ -36,13 +36,13 @@ def create_test_data(start, end, step, iterations):
     dir = '/home/patrickb/GitRepos/qbsolv/examples/exactCover/qbsolvScalingData/multi_processing_numpy/'
     for variable_count in [x for x in range(start, end) if x % step  == 0]:
         for iter in range(0, iterations):
-            print('Solving QUBO of size ' + str(variable_count) + ' iteration: ' + "{:05d}".format(iter))
             ec = ecg.generate_exact_cover(variable_count)
-            filename = 'exactCover_rep_' + "{:02d}".format(iter) + '_' + "{:06d}".format(variable_count)
-            profile_method(solve_exact_cover_numpy, ec, save_directory = dir, filename = filename)
-            post_processing_csv(dir + filename + '.csv', lBits=variable_count)
+            subfolder = dir + 'iter_' + "{:03d}".format(iter) + '/'
+            filename = 'exactCover_' + "{:06d}".format(variable_count)
+            profile_method(solve_exact_cover_numpy, ec, save_directory = subfolder, filename = filename)
+            post_processing_csv(subfolder + filename + '.csv', lBits=variable_count)
 
 if __name__ == '__main__':
-    create_test_data(start = 500, end = 550, step = 50, iterations= 1)
+    create_test_data(start = 500, end = 1000, step = 50, iterations= 3)
 
 

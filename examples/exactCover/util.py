@@ -2,6 +2,7 @@ import cProfile
 import io
 import pstats
 import re
+import os
 
 import pandas as pd
 
@@ -45,7 +46,10 @@ def profile_method(fnc, *args, save_directory, filename):
     stats.print_stats(regex)
     #stats.print_stats()
     print(s.getvalue())
-    stats.dump_stats(save_directory + '/prof/' + filename + ".prof")
+    prof_path = save_directory + 'prof/'
+    os.makedirs(prof_path, exist_ok=True)
+    stats.dump_stats(prof_path + filename + ".prof")
+    os.makedirs(save_directory, exist_ok=True)
     with open(save_path + ".csv", 'w+') as f:
         result = s.getvalue()
         result ='ncalls'+result.split('ncalls')[-1]
