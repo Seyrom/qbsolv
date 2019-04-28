@@ -1,8 +1,6 @@
-import examples.exactCover.generate_qubo as gq
+import examples.exactCover.path_util as pu
 import pandas as pd
-import numpy as np
 import timeit
-import examples.exactCover.exactcover_util as ec
 
 
 
@@ -10,9 +8,9 @@ serial_code = "gq.generate_qubo_single_threaded(ec)"
 
 numpy_code = '''gq.generate_qubo_numpy_single_threaded(ec)'''
 
-multiprocessing_code = '''gq.generate_qubo_multi_processing(ec, nProcs= 4)'''
+multiprocessing_code = '''gq.generate_qubo_multi_processing(ec, processes=4)'''
 
-multiprocessing_numpy_code = '''gq.generate_qubo_numpy_multi_processing(ec, nProcs = 4)'''
+multiprocessing_numpy_code = '''gq.generate_qubo_numpy_multi_processing(ec, processes=4)'''
 
 
 def create_csv(path, ec_size, num_reps = 1):
@@ -35,19 +33,20 @@ def create_csv(path, ec_size, num_reps = 1):
             "multiprocessing_numpy" : multiprocessing_numpy
             }
     df = pd.Series(data).to_frame('time')
+    df['lBits'] = ec_size
 
     df.to_csv(path)
 
 
 if __name__ == '__main__':
-    folder = '/home/patrickb/GitRepos/qbsolv/examples/exactCover/qbsolvScalingData/qubo_generation/'
-    start = 50
-    end = 2000
+    folder = pu.qubo_generation_path()
+    start = 450
+    end = 500
     step = 50
     cur = start
 
     while cur <= end:
-        file = 'qubo_generation_' + "{:06d}".format(cur) + '.csv'
+        file = '/qubo_generation_' + "{:06d}".format(cur) + '.csv'
         cur += step
         path = folder + file
-        create_csv(path=path, ec_size=50, num_reps=30)
+        create_csv(path=path, ec_size=50, num_reps=1)

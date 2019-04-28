@@ -1,6 +1,8 @@
 import examples.exactCover.generate_qubo as gq
-import examples.exactCover.exactcover_util as ecg
+import examples.exactCover.exact_cover_util as ecg
+import examples.exactCover.path_util as pu
 from examples.exactCover.util import profile_method, post_processing_csv
+
 
 from python.dwave_qbsolv.dimod_wrapper import QBSolv
 
@@ -16,11 +18,11 @@ def  solve_exact_cover_numpy(exact_cover):
 
 def solve_exact_cover_multi_processing(exact_cover):
     """Generates a QUBO and then samples it with qbsolv to solve the given exact cover problem"""
-    QUBO = gq.generate_qubo_numpy_multi_processing(exact_cover, nProcs= 4)
+    QUBO = gq.generate_qubo_numpy_multi_processing(exact_cover, processes= 4)
     QBSolv().sample_qubo(QUBO, verbosity =-1)
 
 def solve_exact_cover_multi_processing_numpy(exact_cover):
-    QUBO = gq.generate_qubo_numpy_multi_processing(exact_cover, nProcs= 4)
+    QUBO = gq.generate_qubo_numpy_multi_processing(exact_cover, processes= 4)
     QBSolv().sample_qubo(QUBO, verbosity =-1)
 
 #def solve_exact_cover_dwave(exact_cover):
@@ -33,13 +35,13 @@ def solve_exact_cover_multi_processing_numpy(exact_cover):
     #QBSolv().sample_qubo(QUBO, verbosity = -1)
 
 def create_test_data(start, end, step, iterations):
-    dir = '/home/patrickb/GitRepos/qbsolv/examples/exactCover/qbsolvScalingData/multi_processing_numpy/'
+    dir = pu.scale_path()
     for variable_count in [x for x in range(start, end) if x % step  == 0]:
         for iter in range(0, iterations):
             ec = ecg.generate_exact_cover(variable_count)
-            subfolder = dir + 'iter_' + "{:03d}".format(iter) + '/'
-            filename = 'exactCover_' + "{:06d}".format(variable_count)
-            profile_method(solve_exact_cover_numpy, ec, save_directory = subfolder, filename = filename)
+            subfolder = pu.scale_iter_path(iter)
+            filename = '/' + "{:06d}".format(variable_count)
+            profile_method(solve_exact_cover_numpy, ec, save_directory = subfolder, filename = filename, iteration=iter)
             post_processing_csv(subfolder + filename + '.csv', lBits=variable_count)
 
 if __name__ == '__main__':

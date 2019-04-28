@@ -3,6 +3,7 @@ import io
 import pstats
 import re
 import os
+import examples.exactCover.path_util as pu
 
 import pandas as pd
 
@@ -27,7 +28,7 @@ def do_cprofile(func):
     return profiled_func
 
 
-def profile_method(fnc, *args, save_directory, filename):
+def profile_method(fnc, *args, save_directory, filename, iteration):
     """Profiles any given function and saves it as a .csv and .prof"""
     pr = cProfile.Profile()
 
@@ -38,19 +39,18 @@ def profile_method(fnc, *args, save_directory, filename):
     s = io.StringIO()
     stats = pstats.Stats(pr, stream=s)
     stats.strip_dirs()
-    save_path = save_directory + filename
+
+    prof_path = pu.scale_prof_path(iteration)
+    stats.dump_stats(prof_path + '/' + filename + ".prof")
+
 
     regex = '.*(solve_exact_cover\S*)|.*(\(generate_qubo\S*)|.*(sample_qubo)|.*(\(sample)' \
             '|(dwave_qbsolv.qbsolv_binding.run_qbsolv)|.*(from_qubo)|.*(to_qubo)'
 
     stats.print_stats(regex)
-    #stats.print_stats()
-    print(s.getvalue())
-    prof_path = save_directory + 'prof/'
-    os.makedirs(prof_path, exist_ok=True)
-    stats.dump_stats(prof_path + filename + ".prof")
-    os.makedirs(save_directory, exist_ok=True)
-    with open(save_path + ".csv", 'w+') as f:
+
+
+    with open(save_directory + filename + ".csv", 'w+') as f:
         result = s.getvalue()
         result ='ncalls'+result.split('ncalls')[-1]
         result ='\n'.join([','.join(line.rstrip().split(None,6)) for line in result.split('\n')])
