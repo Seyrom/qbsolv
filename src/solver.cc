@@ -538,7 +538,9 @@ int reduce_solve_projection(int *Icompress, double **qubo, int qubo_size, int su
         sub_solution[i] = solution[Icompress[i]];
     }
 
+    // ------------------!!!!!!!!!!!!!DWave Sampler or TabuSearch depending on given sub_sampler function!!!!!!!!!!!!!!!!!!!!---------------
     param->sub_sampler(sub_qubo, subMatrix, sub_solution, param->sub_sampler_data);
+    // ------------------!!!!!!!!!!!!!DWave Sampler or TabuSearch depending on given sub_sampler function!!!!!!!!!!!!!!!!!!!!---------------
 
     // modification to write out subqubos
     // char subqubofile[sizeof "subqubo10000.qubo"];
