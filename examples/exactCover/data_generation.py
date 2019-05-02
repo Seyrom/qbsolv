@@ -28,6 +28,7 @@ def create_test_data(start, end, step, iterations):
             filename = '/' + "{:06d}".format(variable_count)
             print("Currently solving exact cover of size: " + str(variable_count) + "iteration: #" + str(i))
             profile_method(solve_exact_cover, ec, save_directory=subfolder, filename=filename, iteration=i)
+            print("Finished solving exact cover of size: " + str(variable_count) + "iteration: #" + str(i))
             post_processing_csv(subfolder + filename + '.csv', lbits=variable_count)
             if i % 4 == 0:
                 gc.collect()
