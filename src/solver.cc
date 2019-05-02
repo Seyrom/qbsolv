@@ -17,6 +17,9 @@
 #include "macros.h"
 #include "qbsolv.h"
 #include "util.h"
+#include <iostream>
+#include <fstream>
+#include <string>
 
 #include <math.h>
 
@@ -520,7 +523,8 @@ double solv_submatrix(int8_t *solution, int8_t *best, uint qubo_size, double **q
 // @param[in,out] solution inputs a current solution and returns the projected solution
 // @param[out] stores the new, projected solution found during the algorithm
 int reduce_solve_projection(int *Icompress, double **qubo, int qubo_size, int subMatrix, int8_t *solution,
-                            parameters_t *param) {
+                            parameters_t *param, double *dwave_search_cumtime) {
+    using namespace std;
     int change = 0;
     int8_t *sub_solution = (int8_t *)malloc(sizeof(int8_t) * subMatrix);
     double **sub_qubo;
@@ -539,7 +543,13 @@ int reduce_solve_projection(int *Icompress, double **qubo, int qubo_size, int su
     }
 
     // ------------------!!!!!!!!!!!!!DWave Sampler or TabuSearch depending on given sub_sampler function!!!!!!!!!!!!!!!!!!!!---------------
+    clock_t begin = clock();
     param->sub_sampler(sub_qubo, subMatrix, sub_solution, param->sub_sampler_data);
+    clock_t end = clock();
+
+    double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+    *dwave_search_cumtime +=  elapsed_secs;
+
     // ------------------!!!!!!!!!!!!!DWave Sampler or TabuSearch depending on given sub_sampler function!!!!!!!!!!!!!!!!!!!!---------------
 
     // modification to write out subqubos
@@ -635,6 +645,7 @@ parameters_t default_parameters() {
 void solve(double **qubo, const int qubo_size, int8_t **solution_list, double *energy_list, int *solution_counts,
            int *Qindex, int QLEN, parameters_t *param) {
     double *flip_cost, energy;
+    double dwave_search_cumtime = 0;
     int *TabuK, *index, start_;
     int8_t *solution, *tabu_solution;
     long numPartCalls = 0;
@@ -820,7 +831,7 @@ void solve(double **qubo, const int qubo_size, int8_t **solution_list, double *e
                                 Icompress[j++] = Pcompress[i];  // create compression index
                             }
                         }
-                        t_change = reduce_solve_projection(Icompress, qubo, qubo_size, subMatrix, solution, param);
+                        t_change = reduce_solve_projection(Icompress, qubo, qubo_size, subMatrix, solution, param, &dwave_search_cumtime);
                         // do the following in a critical region
 
                         change = change + t_change;
@@ -953,6 +964,12 @@ void solve(double **qubo, const int qubo_size, int8_t **solution_list, double *e
     free(index);
     free(TabuK);
     free(Pcompress);
+
+    std::ofstream data;
+    data.open("temp_data.csv");
+    data << "function,cumtime\n";
+    data << "dwave_qbsolv.dwavesearch," + std::to_string(dwave_search_cumtime) + "\n";
+    data.close();
 
     return;
 }
