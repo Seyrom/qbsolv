@@ -5,19 +5,19 @@ import pandas as pd
 
 from path_util import qubo_generation_path
 
-serial_code = "gq.generate_qubo_single_threaded(ec)"
+serial_code = "generate_qubo_single_threaded(ec)"
 
-numpy_code = '''gq.generate_qubo_numpy_single_threaded(ec)'''
+numpy_code = '''generate_qubo_numpy_single_threaded(ec)'''
 
-multiprocessing_code = '''gq.generate_qubo_multi_processing(ec, processes=4)'''
+multiprocessing_code = '''generate_qubo_multi_processing(ec, processes=4)'''
 
-multiprocessing_numpy_code = '''gq.generate_qubo_numpy_multi_processing(ec, processes=4)'''
+multiprocessing_numpy_code = '''generate_qubo_numpy_multi_processing(ec, processes=4)'''
 
 
 def create_csv(path, ec_size, num_reps=1):
-    setup = "import examples.exactCover.generate_qubo as gq \n" \
-            "import examples.exactCover.exact_cover_util as ec \n" \
-            "ec = ec.generate_exact_cover(" + str(ec_size) + ")"
+    setup = "from generate_qubo import generate_qubo_single_threaded \n" \
+            "from exact_cover_util import generate_exact_cover \n" \
+            "ec = generate_exact_cover(" + str(ec_size) + ")"
 
     serial = timeit.timeit(serial_code, setup=setup, number=num_reps)
 
