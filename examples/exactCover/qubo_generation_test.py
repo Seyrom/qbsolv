@@ -46,5 +46,6 @@ if __name__ == '__main__':
     while i <= end:
         create_csv(path=folder + '/' + "{:06d}".format(i) + '.csv', ec_size=i, num_reps=75)
         i += step
+        print("Currently at Qubo size" + i)
         if i % 4 == 0:
             gc.collect()
