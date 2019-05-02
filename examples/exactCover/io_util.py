@@ -6,7 +6,7 @@ import re
 
 import pandas as pd
 
-import examples.exactCover.path_util as pu
+from .path_util import path, scale_prof_path
 
 
 def profile_method(fnc, *args, save_directory, filename, iteration):
@@ -21,7 +21,7 @@ def profile_method(fnc, *args, save_directory, filename, iteration):
     stats = pstats.Stats(pr, stream=s)
     stats.strip_dirs()
 
-    prof_path = pu.scale_prof_path(iteration)
+    prof_path = scale_prof_path(iteration)
     stats.dump_stats(prof_path + '/' + filename + ".prof")
 
     regex = '.*(solve_exact_cover\S*)|.*(\(generate_qubo\S*)|.*(sample_qubo)|.*(\(sample)' \
@@ -40,7 +40,7 @@ def profile_method(fnc, *args, save_directory, filename, iteration):
 def post_processing_csv(path_of_file, lbits):
     """Adds a new logicalBits column containing how many logical bits were used
     for this exactCover and deletes unused columns"""
-    temp_path = pu.path() + "/temp_data.csv"
+    temp_path = path() + "/temp_data.csv"
     df_temp = pd.read_csv(temp_path, delimiter=',', encoding="utf-8")
     df_temp.set_index('function', inplace=True)
     df = pd.read_csv(path_of_file, delimiter=',', encoding="utf-8")

@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-import examples.exactCover.path_util as pu
+from .path_util import scale_path
 
 # CSV Structure
 '''
@@ -23,7 +23,7 @@ solve_exact_cover                           ,12.627         ,950
 
 
 def over_all_plot():
-    path = pu.scale_path()
+    path = scale_path()
     subfolders = [f.path for f in os.scandir(path) if f.is_dir()]
     lbits = []
     total_runtime = []
@@ -71,7 +71,7 @@ def over_all_plot():
 
 
 def qubo_sampling_plot():
-    path = pu.scale_path()
+    path = scale_path()
     subfolders = [f.path for f in os.scandir(path) if f.is_dir()]
     lbits = []
     sampling_overall = []
@@ -122,8 +122,3 @@ if __name__ == '__main__':
     over_all_plot()
     qubo_sampling_plot()
 
-# solve_exact_cover calls:
-# generate_qubo and sample_qubo
-# sample_qubo calls:
-# from_qubo and sample
-# sample calls binding.run_qbsolv

@@ -3,7 +3,8 @@ import glob
 import matplotlib.pyplot as plt
 import pandas as pd
 
-import examples.exactCover.path_util as pu
+from .path_util import qubo_generation_path
+
 
 # CSV Structure
 '''
@@ -23,7 +24,7 @@ def get_data(path):
 
 def plot():
     """Creates a plot of the total runtime of a given method"""
-    path = pu.qubo_generation_path()
+    path = qubo_generation_path()
     files = sorted(get_data(path))
 
     lbits = []

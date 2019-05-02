@@ -3,7 +3,7 @@ from multiprocessing import Pool
 
 import numpy as np
 
-import examples.exactCover.exact_cover_util as ec
+from .exact_cover_util import generate_exact_cover
 
 
 def generate_qubo_single_threaded(exact_cover, b=1):
@@ -91,7 +91,7 @@ def to_dict(arr):
 
 
 if __name__ == '__main__':
-    ec = ec.generate_exact_cover(100)
+    ec = generate_exact_cover(100)
     Q1 = generate_qubo_single_threaded(ec)
     Q2 = generate_qubo_numpy_single_threaded(ec)
     Q3 = generate_qubo_multi_processing(ec, 4)

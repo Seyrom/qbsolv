@@ -1,9 +1,8 @@
 import gc
 
-import examples.exactCover.exact_cover_util as ecg
-import examples.exactCover.generate_qubo as gq
-import examples.exactCover.io_util as io
-import examples.exactCover.path_util as pu
+from .exact_cover_util import generate_exact_cover
+from .io_util import profile_method, post_processing_csv
+from .path_util import scale_iter_path
 from python.dwave_qbsolv.dimod_wrapper import QBSolv
 
 
@@ -24,12 +23,12 @@ def solve_exact_cover(exact_cover):
 def create_test_data(start, end, step, iterations):
     for variable_count in [x for x in range(start, end) if x % step == 0]:
         for i in range(0, iterations):
-            ec = ecg.generate_exact_cover(variable_count)
-            subfolder = pu.scale_iter_path(i)
+            ec = generate_exact_cover(variable_count)
+            subfolder = scale_iter_path(i)
             filename = '/' + "{:06d}".format(variable_count)
             print("Currently solving exact cover of size: " + str(variable_count) + "iteration: #" + str(i))
-            io.profile_method(solve_exact_cover, ec, save_directory=subfolder, filename=filename, iteration=i)
-            io.post_processing_csv(subfolder + filename + '.csv', lbits=variable_count)
+            profile_method(solve_exact_cover, ec, save_directory=subfolder, filename=filename, iteration=i)
+            post_processing_csv(subfolder + filename + '.csv', lbits=variable_count)
             if i % 4 == 0:
                 gc.collect()
 
