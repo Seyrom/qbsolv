@@ -3,7 +3,7 @@ import timeit
 import gc
 import pandas as pd
 
-import examples.exactCover.path_util as pu
+from .path_util import qubo_generation_path
 
 serial_code = "gq.generate_qubo_single_threaded(ec)"
 
@@ -38,7 +38,7 @@ def create_csv(path, ec_size, num_reps=1):
 
 
 if __name__ == '__main__':
-    folder = pu.qubo_generation_path()
+    folder = qubo_generation_path()
     i = 50
     end = 4000
     step = 25
