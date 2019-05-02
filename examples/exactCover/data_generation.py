@@ -27,6 +27,7 @@ def create_test_data(start, end, step, iterations):
             ec = ecg.generate_exact_cover(variable_count)
             subfolder = pu.scale_iter_path(i)
             filename = '/' + "{:06d}".format(variable_count)
+            print("Currently solving exact cover of size: " + str(variable_count) + "iteration: #" + str(i))
             io.profile_method(solve_exact_cover, ec, save_directory=subfolder, filename=filename, iteration=i)
             io.post_processing_csv(subfolder + filename + '.csv', lbits=variable_count)
             if i % 4 == 0:
