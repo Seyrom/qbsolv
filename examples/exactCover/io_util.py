@@ -6,7 +6,7 @@ import re
 
 import pandas as pd
 
-from .path_util import path, scale_prof_path
+from path_util import path, scale_prof_path
 
 
 def profile_method(fnc, *args, save_directory, filename, iteration):

@@ -3,7 +3,7 @@ from multiprocessing import Pool
 
 import numpy as np
 
-from .exact_cover_util import generate_exact_cover
+from exact_cover_util import generate_exact_cover
 
 
 def generate_qubo_single_threaded(exact_cover, b=1):
