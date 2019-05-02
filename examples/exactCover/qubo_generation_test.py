@@ -5,6 +5,7 @@ import pandas as pd
 
 from path_util import qubo_generation_path
 
+
 serial_code = "generate_qubo_single_threaded(ec)"
 
 numpy_code = '''generate_qubo_numpy_single_threaded(ec)'''
@@ -15,7 +16,8 @@ multiprocessing_numpy_code = '''generate_qubo_numpy_multi_processing(ec, process
 
 
 def create_csv(path, ec_size, num_reps=1):
-    setup = "from generate_qubo import generate_qubo_single_threaded \n" \
+    setup = "from generate_qubo import generate_qubo_single_threaded, generate_qubo_numpy_single_threaded," \
+            " generate_qubo_multi_processing, generate_qubo_numpy_multi_processing \n" \
             "from exact_cover_util import generate_exact_cover \n" \
             "ec = generate_exact_cover(" + str(ec_size) + ")"
 
