@@ -40,11 +40,11 @@ def create_csv(path, ec_size, num_reps=1):
 if __name__ == '__main__':
     folder = pu.qubo_generation_path()
     i = 50
-    end = 2500
-    step = 50
+    end = 4000
+    step = 25
 
     while i <= end:
-        create_csv(path=folder + '/' + "{:06d}".format(i) + '.csv', ec_size=i, num_reps=1)
+        create_csv(path=folder + '/' + "{:06d}".format(i) + '.csv', ec_size=i, num_reps=75)
         i += step
         if i % 4 == 0:
             gc.collect()

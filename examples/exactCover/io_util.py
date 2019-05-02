@@ -1,5 +1,6 @@
 import cProfile
 import io
+import os
 import pstats
 import re
 
@@ -39,13 +40,21 @@ def profile_method(fnc, *args, save_directory, filename, iteration):
 def post_processing_csv(path_of_file, lbits):
     """Adds a new logicalBits column containing how many logical bits were used
     for this exactCover and deletes unused columns"""
+    temp_path = pu.path() + "/temp_data.csv"
+    df_temp = pd.read_csv(temp_path, delimiter=',', encoding="utf-8")
+    df_temp.set_index('function', inplace=True)
     df = pd.read_csv(path_of_file, delimiter=',', encoding="utf-8")
     df.drop(['ncalls', 'tottime', 'percall', 'percall.1'], inplace=True, axis=1)
+
     df.rename(columns={'filename:lineno(function)': 'function'}, inplace=True)
-    df['lBits'] = lbits
-    # removing Classname.py:linenumber and paranthesis
     regex = '(\S*.py:\d+)|\(|\)|{|}'
     df['function'] = df['function'].apply(lambda x: re.sub(regex, '', x))
-    df['cumtime'] = df['cumtime'].round(5)
+
     df.set_index('function', inplace=True)
+
+    df = pd.concat([df_temp, df])
+    df['lBits'] = lbits
+    # removing Classname.py:linenumber and paranthesis
+    df['cumtime'] = df['cumtime'].round(5)
     df.to_csv(path_of_file, encoding="utf-8")
+    os.remove(temp_path)

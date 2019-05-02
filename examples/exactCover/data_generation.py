@@ -34,4 +34,4 @@ def create_test_data(start, end, step, iterations):
 
 
 if __name__ == '__main__':
-    create_test_data(start=1000, end=2000, step=50, iterations=3)
+    create_test_data(start=50, end=4000, step=25, iterations=75)
