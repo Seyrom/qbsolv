@@ -1,8 +1,8 @@
 import gc
 
-from .exact_cover_util import generate_exact_cover
-from .io_util import profile_method, post_processing_csv
-from .path_util import scale_iter_path
+from exact_cover_util import generate_exact_cover
+from io_util import profile_method, post_processing_csv
+from path_util import scale_iter_path
 from python.dwave_qbsolv.dimod_wrapper import QBSolv
 
 

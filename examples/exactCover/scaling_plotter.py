@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from .path_util import scale_path
+from path_util import scale_path
 
 # CSV Structure
 '''

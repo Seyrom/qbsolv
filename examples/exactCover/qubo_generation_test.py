@@ -3,7 +3,7 @@ import timeit
 import gc
 import pandas as pd
 
-from .path_util import qubo_generation_path
+from path_util import qubo_generation_path
 
 serial_code = "gq.generate_qubo_single_threaded(ec)"
 
