@@ -42,12 +42,11 @@ def create_csv(path, ec_size, num_reps=1):
 if __name__ == '__main__':
     folder = qubo_generation_path()
     i = 50
-    end = 4000
+    end = 3000
     step = 25
 
     while i <= end:
-        print("Currently at Qubo size" + str(i))
-        create_csv(path=folder + '/' + "{:06d}".format(i) + '.csv', ec_size=i, num_reps=75)
+        create_csv(path=folder + '/' + "{:06d}".format(i) + '.csv', ec_size=i, num_reps=30)
         i += step
         print("Finishhed Qubo size" + str(i))
         if i % 4 == 0:
