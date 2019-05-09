@@ -1,10 +1,11 @@
 import gc
-
+import os, sys, site
 from exact_cover_util import generate_exact_cover
 from io_util import profile_method, post_processing_csv
 from path_util import scale_iter_path
-from python.dwave_qbsolv.dimod_wrapper import QBSolv
+from dimod_wrapper import QBSolv
 from generate_qubo import generate_qubo_numpy_multi_processing
+
 
 
 def solve_exact_cover(exact_cover):

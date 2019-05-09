@@ -36,5 +36,5 @@ def scale_prof_path(iteration):
 
 
 if __name__ == '__main__':
-    qubo_generation_path()
+    print(qubo_generation_path())
     scale_path()
