@@ -1,0 +1,5 @@
+name,time,lBits
+serial,96.37153725299868,700
+serial_numpy,91.63988325100217,700
+multiprocessing,49.35260162600025,700
+multiprocessing_numpy,52.01373293000506,700
