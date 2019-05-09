@@ -4,10 +4,11 @@ from exact_cover_util import generate_exact_cover
 from io_util import profile_method, post_processing_csv
 from path_util import scale_iter_path
 from python.dwave_qbsolv.dimod_wrapper import QBSolv
+from generate_qubo import generate_qubo_numpy_multi_processing
 
 
 def solve_exact_cover(exact_cover):
-    qubo = gq.generate_qubo_numpy_multi_processing(exact_cover, processes=4)
+    qubo = generate_qubo_numpy_multi_processing(exact_cover, processes=4)
     QBSolv().sample_qubo(qubo, verbosity=-1)
 
 
@@ -35,4 +36,4 @@ def create_test_data(start, end, step, iterations):
 
 
 if __name__ == '__main__':
-    create_test_data(start=50, end=4000, step=25, iterations=75)
+    create_test_data(start=50, end=4000, step=25, iterations=50)
