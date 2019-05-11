@@ -6,46 +6,42 @@ import numpy as np
 from exact_cover_util import generate_exact_cover
 
 
-def generate_qubo_single_threaded(exact_cover, b=1):
+def generate_qubo_single_threaded(exact_cover):
     """Generates an upper triangular QUBO matrix for the given exact cover"""
-    a = len(exact_cover) * b + 1
     q = dict()
     for j, cur_subset in enumerate(exact_cover):
         q[(j, j)] = -len(cur_subset)
         for i, oth_subset in [(i, oth_subset) for i, oth_subset in enumerate(exact_cover) if j < i]:
             # upper triangular matrix
-            q[(j, i)] = 4 * a * len(cur_subset & oth_subset)
+            q[(j, i)] = 4  * len(cur_subset & oth_subset)
     return q
 
 
-def generate_qubo_numpy_single_threaded(exact_cover, b=1):
+def generate_qubo_numpy_single_threaded(exact_cover):
     """Generates an upper triangular QUBO matrix as a numpy array for the given exact cover"""
-    a = len(exact_cover) * b + 1
     dim = len(exact_cover)
     arr = np.empty(shape=(dim, dim), dtype=np.dtype('>i4'))
     for j, cur_subset in enumerate(exact_cover):
-        arr[j] = [4 * a * len(cur_subset & oth_subset) if j < i else -len(cur_subset) if i == j else 0 for i, oth_subset
+        arr[j] = [4  * len(cur_subset & oth_subset) if j < i else -len(cur_subset) if i == j else 0 for i, oth_subset
                   in enumerate(exact_cover)]
     return to_dict(arr)
 
 
-def fill_col(i, ec, a):
+def fill_col(i, ec):
     col = ec[i]
     dic_temp = dict()
     dic_temp[(i, i)] = -len(col)
     for j, subset in [(j, subset) for j, subset in enumerate(ec) if j < i]:
         # upper triangular matrix
-        dic_temp[(j, i)] = 4 * a * len(col & subset)
+        dic_temp[(j, i)] = 4  * len(col & subset)
     return dic_temp
 
 
-def generate_qubo_multi_processing(exact_cover, processes, b=1):
+def generate_qubo_multi_processing(exact_cover, processes):
     """Generates an upper triangular QUBO matrix for the given exact cover with multi processing"""
-
-    a = len(exact_cover) * b + 1
     q = dict()
 
-    prod = partial(fill_col, ec=exact_cover, a=a)
+    prod = partial(fill_col, ec=exact_cover)
     pool = Pool(processes=processes)
     result = pool.map(prod, range(len(exact_cover)))
     pool.close()
@@ -55,22 +51,21 @@ def generate_qubo_multi_processing(exact_cover, processes, b=1):
     return q
 
 
-def fill_col_numpy(i, ec, a):
+def fill_col_numpy(i, ec):
     col = ec[i]
 
     arr = np.array(
-        [4 * a * len(col & oth_subset) if j > i else -len(col) if i == j else 0 for j, oth_subset in enumerate(ec)])
+        [4 * len(col & oth_subset) if j > i else -len(col) if i == j else 0 for j, oth_subset in enumerate(ec)])
     return arr, i
 
 
-def generate_qubo_numpy_multi_processing(exact_cover, processes, b=1):
-    """Generates an upper triangular QUBO matrix with numpy for the given exact cover with multi processing"""
+def generate_qubo_numpy_multi_processing(exact_cover, processes):
+    """Generates an upper triangular QUBO matrix with a numpy array for the given exact cover with multi processing"""
 
-    a = len(exact_cover) * b + 1
     dim = len(exact_cover)
     arr = np.empty(shape=(dim, dim), dtype=np.dtype('>i4'))
 
-    prod = partial(fill_col_numpy, ec=exact_cover, a=a)
+    prod = partial(fill_col_numpy, ec=exact_cover)
     pool = Pool(processes=processes)
     result = pool.map(prod, range(len(exact_cover)))
     pool.close()
