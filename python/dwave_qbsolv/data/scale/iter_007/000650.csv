@@ -1,0 +1,9 @@
+function,cumtime,lBits
+dwave_qbsolv.dwavesearch,1.77388,650
+dwave_qbsolv.qbsolv_binding.run_qbsolv,2.974,650
+generate_qubo_numpy_multi_processing,1.532,650
+sample,3.129,650
+sample_qubo,5.172,650
+to_qubo,0.152,650
+from_qubo,2.032,650
+solve_exact_cover,6.706,650
